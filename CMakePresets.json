@@ -1,0 +1,347 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "hidden": true
+    },
+    {
+      "name": "gcc",
+      "toolchainFile": "${sourceDir}/cmake/Toolchains/toolchain-gcc.cmake",
+      "hidden": true
+    },
+    {
+      "name": "debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "profile",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Profile"
+      },
+      "hidden": true
+    },
+    {
+      "name": "release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Asan"
+      },
+      "hidden": true
+    },
+    {
+      "name": "tsan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Tsan"
+      },
+      "hidden": true
+    },
+    {
+      "name": "ubsan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Ubsan"
+      },
+      "hidden": true
+    },
+    {
+      "name": "gcc-debug",
+      "inherits": [
+        "base",
+        "gcc",
+        "debug"
+      ]
+    },
+    {
+      "name": "gcc-profile",
+      "inherits": [
+        "base",
+        "gcc",
+        "profile"
+      ]
+    },
+    {
+      "name": "gcc-release",
+      "inherits": [
+        "base",
+        "gcc",
+        "release"
+      ]
+    },
+    {
+      "name": "gcc-asan",
+      "inherits": [
+        "base",
+        "gcc",
+        "asan"
+      ]
+    },
+    {
+      "name": "gcc-tsan",
+      "inherits": [
+        "base",
+        "gcc",
+        "tsan"
+      ]
+    },
+    {
+      "name": "gcc-ubsan",
+      "inherits": [
+        "base",
+        "gcc",
+        "ubsan"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug"
+    },
+    {
+      "name": "gcc-profile",
+      "configurePreset": "gcc-profile"
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release"
+    },
+    {
+      "name": "gcc-asan",
+      "configurePreset": "gcc-asan"
+    },
+    {
+      "name": "gcc-tsan",
+      "configurePreset": "gcc-tsan"
+    },
+    {
+      "name": "gcc-ubsan",
+      "configurePreset": "gcc-ubsan"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-profile",
+      "configurePreset": "gcc-profile",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-asan",
+      "configurePreset": "gcc-asan",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-tsan",
+      "configurePreset": "gcc-tsan",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-ubsan",
+      "configurePreset": "gcc-ubsan",
+      "output": {
+        "verbosity": "extra",
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug"
+    },
+    {
+      "name": "gcc-profile",
+      "configurePreset": "gcc-profile"
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release"
+    },
+    {
+      "name": "gcc-asan",
+      "configurePreset": "gcc-asan"
+    },
+    {
+      "name": "gcc-tsan",
+      "configurePreset": "gcc-tsan"
+    },
+    {
+      "name": "gcc-ubsan",
+      "configurePreset": "gcc-ubsan"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "gcc-debug",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-debug"
+        },
+        {
+          "type": "build",
+          "name": "gcc-debug"
+        },
+        {
+          "type": "test",
+          "name": "gcc-debug"
+        },
+        {
+          "type": "package",
+          "name": "gcc-debug"
+        }
+      ]
+    },
+    {
+      "name": "gcc-profile",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-profile"
+        },
+        {
+          "type": "build",
+          "name": "gcc-profile"
+        },
+        {
+          "type": "test",
+          "name": "gcc-profile"
+        },
+        {
+          "type": "package",
+          "name": "gcc-profile"
+        }
+      ]
+    },
+    {
+      "name": "gcc-release",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-release"
+        },
+        {
+          "type": "build",
+          "name": "gcc-release"
+        },
+        {
+          "type": "test",
+          "name": "gcc-release"
+        },
+        {
+          "type": "package",
+          "name": "gcc-release"
+        }
+      ]
+    },
+    {
+      "name": "gcc-asan",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-asan"
+        },
+        {
+          "type": "build",
+          "name": "gcc-asan"
+        },
+        {
+          "type": "test",
+          "name": "gcc-asan"
+        },
+        {
+          "type": "package",
+          "name": "gcc-asan"
+        }
+      ]
+    },
+    {
+      "name": "gcc-tsan",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-tsan"
+        },
+        {
+          "type": "build",
+          "name": "gcc-tsan"
+        },
+        {
+          "type": "test",
+          "name": "gcc-tsan"
+        },
+        {
+          "type": "package",
+          "name": "gcc-tsan"
+        }
+      ]
+    },
+    {
+      "name": "gcc-ubsan",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-ubsan"
+        },
+        {
+          "type": "build",
+          "name": "gcc-ubsan"
+        },
+        {
+          "type": "test",
+          "name": "gcc-ubsan"
+        },
+        {
+          "type": "package",
+          "name": "gcc-ubsan"
+        }
+      ]
+    }
+  ]
+}
