@@ -7,14 +7,6 @@ from conan.tools.files import copy, load, rmdir
 class CarbioRecipe(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     
-    def configure(self):
-        self.options["spdlog"].header_only = False
-        self.options["spdlog"].no_exceptions = True
-        self.options["spdlog"].use_std_fmt = True
-        self.options["gtest"].build_gmock = True
-        self.options["gtest"].hide_symbols = True
-        self.options["gtest"].fPIC = True
-
     def requirements(self):
         # Project dependencies
         self.requires("spdlog/1.15.3")

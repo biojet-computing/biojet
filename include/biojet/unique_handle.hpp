@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace biojet::utility
+namespace biojet
 {
 template <typename Policy>
 class unique_handle
@@ -84,4 +84,4 @@ public:
   unique_handle &operator=(const unique_handle &)               = delete;
   unique_handle &operator=(typename Policy::handle_type handle) = delete;
 };
-} // namespace biojet::utility
+} // namespace biojet

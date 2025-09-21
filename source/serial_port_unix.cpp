@@ -1,6 +1,6 @@
 #include "biojet/result.hpp"
 
-#include "io/serial_port_unix.hpp"
+#include "serial_port_unix.hpp"
 #include <spdlog/spdlog.h>
 
 #include <errno.h>
@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <ranges>
 
-namespace biojet::io
+namespace biojet
 {
 serial_port::impl::impl(serial_configuration configuration) noexcept
 {
@@ -36,25 +36,25 @@ result<bool> serial_port::impl::open() noexcept
   if (!fd_.is_valid())
   {
     spdlog::error("Opening serial port failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   pollfd pfd{};
   pfd.fd     = fd_.get();
   pfd.events = POLLOUT;
 
-  int poll_result = ::poll(&pfd, 1, config_.read_timeout_ms);
+  int poll_result = ::poll(&pfd, 1, static_cast<int32_t>(config_.read_timeout_ms));
   if (poll_result == 0)
   {
     spdlog::error("Timeout while waiting for serial port");
     fd_.reset();
-    return make_error(errc::timeout);
+    return make_error(status_code::timeout);
   }
   else if (poll_result < 0)
   {
     spdlog::error("Error during poll on serial port");
     fd_.reset();
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   spdlog::debug("Serial port open");
@@ -82,6 +82,7 @@ void serial_port::impl::close() noexcept
   if (!is_open())
   {
     spdlog::debug("Port already closed");
+    return;
   }
   fd_.reset();
   spdlog::debug("Closing port done");
@@ -107,18 +108,18 @@ inline void log_hex(std::span<const std::uint8_t> data, std::size_t count, const
     *p++ = hex_chars[data[i] & 0xF];
   }
 
-  spdlog::debug("{} ({} bytes): [{}]", prefix, count, std::string_view(buf, p - buf));
+  spdlog::debug("{} ({} bytes): [{}]", prefix, count, std::string_view(buf, static_cast<size_t>(p - buf)));
 #endif
 }
 
-result<std::size_t> serial_port::impl::write(const std::span<const std::uint8_t> &data) noexcept
+result<std::size_t> serial_port::impl::send(const std::span<const std::uint8_t> &data) noexcept
 {
   spdlog::debug("Writing bytes...");
 
   if (!is_open())
   {
     spdlog::error("Port not open");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   fd_set writefds;
@@ -133,25 +134,25 @@ result<std::size_t> serial_port::impl::write(const std::span<const std::uint8_t>
   if (select_result < 0)
   {
     spdlog::error("Select failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   const auto bytes_written = ::write(fd_.get(), data.data(), data.size());
   if (bytes_written < 0)
   {
     spdlog::error("Write failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
   log_hex(data, static_cast<std::size_t>(bytes_written), "Serial write");
   return make_success(static_cast<std::size_t>(bytes_written));
 }
 
-result<std::size_t> serial_port::impl::read(std::span<std::uint8_t> &data) noexcept
+result<std::size_t> serial_port::impl::recv(std::span<std::uint8_t> &data) noexcept
 {
   if (!is_open())
   {
     perror("serial_port::read - port not open");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   fd_set readfds;
@@ -166,14 +167,14 @@ result<std::size_t> serial_port::impl::read(std::span<std::uint8_t> &data) noexc
   if (select_result < 0)
   {
     spdlog::error("Select failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   const auto bytes_read = ::read(fd_.get(), data.data(), data.size());
   if (bytes_read < 0)
   {
     spdlog::error("Read failed");
-    return make_error(errc::timeout);
+    return make_error(status_code::timeout);
   }
   log_hex(data, static_cast<std::size_t>(bytes_read), "Serial read");
   return make_success(static_cast<std::size_t>(bytes_read));
@@ -207,7 +208,7 @@ result<bool> serial_port::impl::configure() noexcept
   if (::tcgetattr(fd_.get(), &tty) != 0)
   {
     spdlog::error("Get cfg failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   /* set raw mode */
@@ -255,7 +256,7 @@ result<bool> serial_port::impl::configure() noexcept
     default:
     {
       spdlog::error("Baud rate is invalid");
-      return make_error(errc::port_error);
+      return make_error(status_code::port_error);
     }
   }
 
@@ -263,14 +264,14 @@ result<bool> serial_port::impl::configure() noexcept
   if (::cfsetispeed(&tty, speed) != 0)
   {
     spdlog::error("Set input speed failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   /* set output speed */
   if (::cfsetospeed(&tty, speed) != 0)
   {
     spdlog::error("Set output speed failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   // Set data bits
@@ -278,32 +279,32 @@ result<bool> serial_port::impl::configure() noexcept
   {
     case data_bits::_5:
     {
-      tty.c_cflag &= ~CSIZE;
+      tty.c_cflag &= static_cast<tcflag_t>(~CSIZE);
       tty.c_cflag |= CS5;
       break;
     }
     case data_bits::_6:
     {
-      tty.c_cflag &= ~CSIZE;
+      tty.c_cflag &= static_cast<tcflag_t>(~CSIZE);
       tty.c_cflag |= CS6;
       break;
     }
     case data_bits::_7:
     {
-      tty.c_cflag &= ~CSIZE;
+      tty.c_cflag &= static_cast<tcflag_t>(~CSIZE);
       tty.c_cflag |= CS7;
       break;
     }
     case data_bits::_8:
     {
-      tty.c_cflag &= ~CSIZE;
+      tty.c_cflag &= static_cast<tcflag_t>(~CSIZE);
       tty.c_cflag |= CS8;
       break;
     }
     default:
     {
       spdlog::error("Data bits is invalid");
-      return make_error(errc::port_error);
+      return make_error(status_code::port_error);
     }
   }
 
@@ -312,8 +313,8 @@ result<bool> serial_port::impl::configure() noexcept
   {
     case parity_mode::none:
     {
-      tty.c_cflag &= ~PARENB;
-      tty.c_iflag &= ~INPCK;
+      tty.c_cflag &= static_cast<tcflag_t>(~PARENB);
+      tty.c_iflag &= static_cast<tcflag_t>(~INPCK);
       break;
     }
     case parity_mode::odd:
@@ -325,14 +326,14 @@ result<bool> serial_port::impl::configure() noexcept
     case parity_mode::even:
     {
       tty.c_cflag |= PARENB;
-      tty.c_cflag &= ~PARODD;
+      tty.c_cflag &= static_cast<tcflag_t>(~PARODD);
       tty.c_iflag |= INPCK;
       break;
     }
     default:
     {
       spdlog::error("Parity is invalid");
-      return make_error(errc::port_error);
+      return make_error(status_code::port_error);
     }
   }
 
@@ -341,7 +342,7 @@ result<bool> serial_port::impl::configure() noexcept
   {
     case stop_bits::_1:
     {
-      tty.c_cflag &= ~CSTOPB;
+      tty.c_cflag &= static_cast<tcflag_t>(~CSTOPB);
       break;
     }
     case stop_bits::_2:
@@ -352,7 +353,7 @@ result<bool> serial_port::impl::configure() noexcept
     default:
     {
       spdlog::error("Stop bits is invalid");
-      return make_error(errc::port_error);
+      return make_error(status_code::port_error);
     }
   }
 
@@ -362,7 +363,7 @@ result<bool> serial_port::impl::configure() noexcept
     case flow_control::none:
     {
       tty.c_cflag &= ~CRTSCTS;
-      tty.c_iflag &= ~(IXON | IXOFF | IXANY);
+      tty.c_iflag &= static_cast<tcflag_t>(~(IXON | IXOFF | IXANY));
       break;
     }
     case flow_control::software:
@@ -374,13 +375,13 @@ result<bool> serial_port::impl::configure() noexcept
     case flow_control::hardware:
     {
       tty.c_cflag |= CRTSCTS;
-      tty.c_iflag &= ~(IXON | IXOFF | IXANY);
+      tty.c_iflag &= static_cast<tcflag_t>(~(IXON | IXOFF | IXANY));
       break;
     }
     default:
     {
       spdlog::error("Control flow is invalid");
-      return make_error(errc::port_error);
+      return make_error(status_code::port_error);
     }
   }
 
@@ -395,14 +396,36 @@ result<bool> serial_port::impl::configure() noexcept
   if (::tcsetattr(fd_.get(), TCSANOW, &tty) != 0)
   {
     spdlog::error("Write cfg failed");
-    return make_error(errc::port_error);
+    return make_error(status_code::port_error);
   }
 
   spdlog::debug("Port configuration done");
   return true;
 }
 
-serial_port::impl::impl() noexcept                                = default;
-serial_port::impl::impl(impl &&) noexcept                         = default;
-serial_port::impl &serial_port::impl::operator=(impl &&) noexcept = default;
-} // namespace biojet::io
+std::future<result<std::size_t>> serial_port::impl::send_async(const std::span<const std::uint8_t> &buffer) noexcept
+{
+  if (!is_open())
+  {
+    std::promise<result<std::size_t>> promise;
+    auto                              future = promise.get_future();
+    promise.set_value(make_error(status_code::port_error));
+    return future;
+  }
+  return std::async(std::launch::async, [this, buffer]() noexcept -> result<std::size_t> { return send(buffer); });
+}
+
+std::future<result<std::size_t>> serial_port::impl::recv_async(std::span<std::uint8_t> &buffer) noexcept
+{
+  if (!is_open())
+  {
+    std::promise<result<std::size_t>> promise;
+    auto                              future = promise.get_future();
+    promise.set_value(make_error(status_code::port_error));
+    return future;
+  }
+  return std::async(std::launch::async, [this, &buffer]() noexcept -> result<std::size_t> { return recv(buffer); });
+}
+
+serial_port::impl::impl() noexcept = default;
+} // namespace biojet

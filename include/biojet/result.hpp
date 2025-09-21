@@ -1,6 +1,6 @@
 #pragma once
 
-#include "biojet/errors.hpp"
+#include "biojet/status_code.hpp"
 
 #include <expected>
 #include <functional>
@@ -10,15 +10,15 @@
 namespace biojet
 {
 template <typename T>
-using result = std::expected<T, errc>;
+using result = std::expected<T, status_code>;
 
 using void_result = result<void>;
 
 template <typename T>
 constexpr result<std::decay_t<T>>
-make_success(T &&value) noexcept(std::is_nothrow_constructible_v<std::decay_t<T>, T &&>)
+make_success(T &&v) noexcept(std::is_nothrow_constructible_v<std::decay_t<T>, T &&>)
 {
-  return result<std::decay_t<T>>(std::in_place, std::forward<T>(value));
+  return result<std::decay_t<T>>(std::in_place, std::forward<T>(v));
 }
 
 constexpr void_result make_success() noexcept
@@ -28,17 +28,18 @@ constexpr void_result make_success() noexcept
 
 struct make_error_t
 {
-  errc code;
+  status_code v;
+
   template<typename T>
   constexpr operator result<T>() const noexcept
   {
-    return result<T>(std::unexpected<errc>(code));
+    return result<T>(std::unexpected<status_code>(v));
   }
 };
 
-constexpr make_error_t make_error(errc e) noexcept
+constexpr make_error_t make_error(status_code v) noexcept
 {
-  return make_error_t{e};
+  return make_error_t{v};
 }
 
 template <typename T, typename E, typename F>

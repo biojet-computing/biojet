@@ -1,24 +1,19 @@
-#----------------------------------------------------------------------
-# GNU toolchain file
+# LLVM/Clang toolchain file
 set(CMAKE_CONFIGURATION_TYPES Debug Profile Release Asan Tsan Ubsan Rtsan)
-set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}"
-  CACHE STRING "Build configuration types" FORCE
-)
+set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Build configuration types" FORCE)
 
-# Force GNU specific compiler toolset
-set(CMAKE_C_COMPILER   "gcc" CACHE FILEPATH "C compiler")
-set(CMAKE_CXX_COMPILER "g++" CACHE FILEPATH "C++ compiler")
+# Force Clang specific compiler toolset
+set(CMAKE_C_COMPILER   "clang" CACHE FILEPATH "C compiler")
+set(CMAKE_CXX_COMPILER "clang++" CACHE FILEPATH "C++ compiler")
 
 # Ensure C++23 standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)  # No GNU extensions
+set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "Using C compiler   : ${CMAKE_C_COMPILER}")
 message(STATUS "Using C++ compiler : ${CMAKE_CXX_COMPILER}")
 message(STATUS "Using C Standard   : ${CMAKE_C_STANDARD}")
 message(STATUS "Using C++ Standard : ${CMAKE_CXX_STANDARD}")
-# Force compile commands generation for clangd
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Don't search sysroot for build executables.
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -28,10 +23,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 # Test compiler without linking.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-
 # Boost compilation speed
 set(CMAKE_UNITY_BUILD ON)
 set(CMAKE_UNITY_BUILD_BATCH_SIZE 16)
+
 #
 # Figure out the CPU count and parallel execution flags.  For a build of any
 # given sub-project you can add "-- -j <n>" to the end of the build command to
@@ -60,9 +55,9 @@ if(NOT CPU_COUNT EQUAL 0)
     # only necessary for small memory systems, but set it for all systems. Make
     # this a cache variable so that the user can override it from the command
     # line.
-    set(CMAKE_JOB_POOLS "compile=${CPU_COUNT};link=1" CACHE STRING "Ninja job pools for parallel builds")
-    set(CMAKE_JOB_POOL_COMPILE "compile" CACHE STRING "Job pool for compilation")
-    set(CMAKE_JOB_POOL_LINK    "link" CACHE STRING "Job pool for linking")
+    set(CMAKE_JOB_POOLS "compile=${CPU_COUNT};link=1")
+    set(CMAKE_JOB_POOL_COMPILE "compile")
+    set(CMAKE_JOB_POOL_LINK    "link")
     # Tell ninja that it can execute as many parallel jobs as there are CPUs.
     set(CTEST_BUILD_FLAGS -j${CPU_COUNT})
     set(ctest_test_args ${ctest_test_args} PARALLEL_LEVEL ${CPU_COUNT})
@@ -72,6 +67,4 @@ if(NOT CPU_COUNT EQUAL 0)
 endif()
 
 # Includes compiler settings
-include(${CMAKE_CURRENT_LIST_DIR}/overrides-gcc.cmake)
-
-#----------------------------------------------------------------------
+include(${CMAKE_CURRENT_LIST_DIR}/overrides-clang.cmake)

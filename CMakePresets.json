@@ -12,335 +12,183 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "hidden": true
     },
-    {
-      "name": "gcc",
-      "toolchainFile": "${sourceDir}/cmake/Toolchains/toolchain-gcc.cmake",
-      "hidden": true
-    },
-    {
-      "name": "debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      },
-      "hidden": true
-    },
-    {
-      "name": "profile",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Profile"
-      },
-      "hidden": true
-    },
-    {
-      "name": "release",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      },
-      "hidden": true
-    },
-    {
-      "name": "asan",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Asan"
-      },
-      "hidden": true
-    },
-    {
-      "name": "tsan",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Tsan"
-      },
-      "hidden": true
-    },
-    {
-      "name": "ubsan",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Ubsan"
-      },
-      "hidden": true
-    },
-    {
-      "name": "gcc-debug",
-      "inherits": [
-        "base",
-        "gcc",
-        "debug"
-      ]
-    },
-    {
-      "name": "gcc-profile",
-      "inherits": [
-        "base",
-        "gcc",
-        "profile"
-      ]
-    },
-    {
-      "name": "gcc-release",
-      "inherits": [
-        "base",
-        "gcc",
-        "release"
-      ]
-    },
-    {
-      "name": "gcc-asan",
-      "inherits": [
-        "base",
-        "gcc",
-        "asan"
-      ]
-    },
-    {
-      "name": "gcc-tsan",
-      "inherits": [
-        "base",
-        "gcc",
-        "tsan"
-      ]
-    },
-    {
-      "name": "gcc-ubsan",
-      "inherits": [
-        "base",
-        "gcc",
-        "ubsan"
-      ]
-    }
+
+    { "name": "gcc", "toolchainFile": "${sourceDir}/cmake/Toolchains/toolchain-gcc.cmake", "hidden": true },
+    { "name": "clang", "toolchainFile": "${sourceDir}/cmake/Toolchains/toolchain-clang.cmake", "hidden": true },
+
+    { "name": "debug","cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }, "hidden": true },
+    { "name": "profile", "cacheVariables": { "CMAKE_BUILD_TYPE": "Profile" }, "hidden": true },
+    { "name": "release", "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }, "hidden": true },
+    { "name": "asan", "cacheVariables": { "CMAKE_BUILD_TYPE": "Asan" }, "hidden": true },
+    { "name": "tsan", "cacheVariables": { "CMAKE_BUILD_TYPE": "Tsan" }, "hidden": true },
+    { "name": "ubsan", "cacheVariables": { "CMAKE_BUILD_TYPE": "Ubsan" }, "hidden": true },
+
+    { "name": "gcc-debug", "inherits": [ "base", "gcc", "debug" ] },
+    { "name": "gcc-profile", "inherits": [ "base", "gcc", "profile" ] },
+    { "name": "gcc-release", "inherits": [ "base", "gcc", "release" ] },
+    { "name": "gcc-asan", "inherits": [ "base", "gcc", "asan" ] },
+    { "name": "gcc-tsan", "inherits": [ "base", "gcc", "tsan" ] },
+    { "name": "gcc-ubsan", "inherits": [ "base", "gcc", "ubsan" ] },
+
+    { "name": "clang-debug", "inherits": [ "base", "clang", "debug" ] },
+    { "name": "clang-profile", "inherits": [ "base", "clang", "profile" ] },
+    { "name": "clang-release", "inherits": [ "base", "clang", "release" ] },
+    { "name": "clang-asan", "inherits": [ "base", "clang", "asan" ] },
+    { "name": "clang-tsan", "inherits": [ "base", "clang", "tsan" ] },
+    { "name": "clang-ubsan", "inherits": [ "base", "clang", "ubsan" ] }
   ],
   "buildPresets": [
-    {
-      "name": "gcc-debug",
-      "configurePreset": "gcc-debug"
-    },
-    {
-      "name": "gcc-profile",
-      "configurePreset": "gcc-profile"
-    },
-    {
-      "name": "gcc-release",
-      "configurePreset": "gcc-release"
-    },
-    {
-      "name": "gcc-asan",
-      "configurePreset": "gcc-asan"
-    },
-    {
-      "name": "gcc-tsan",
-      "configurePreset": "gcc-tsan"
-    },
-    {
-      "name": "gcc-ubsan",
-      "configurePreset": "gcc-ubsan"
-    }
+    { "name": "gcc-debug", "configurePreset": "gcc-debug" },
+    { "name": "gcc-profile", "configurePreset": "gcc-profile" },
+    { "name": "gcc-release", "configurePreset": "gcc-release" },
+    { "name": "gcc-asan", "configurePreset": "gcc-asan" },
+    { "name": "gcc-tsan", "configurePreset": "gcc-tsan" },
+    { "name": "gcc-ubsan", "configurePreset": "gcc-ubsan" },
+
+    { "name": "clang-debug", "configurePreset": "clang-debug" },
+    { "name": "clang-profile", "configurePreset": "clang-profile" },
+    { "name": "clang-release", "configurePreset": "clang-release" },
+    { "name": "clang-asan", "configurePreset": "clang-asan" },
+    { "name": "clang-tsan", "configurePreset": "clang-tsan" },
+    { "name": "clang-ubsan", "configurePreset": "clang-ubsan" }
   ],
   "testPresets": [
-    {
-      "name": "gcc-debug",
-      "configurePreset": "gcc-debug",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "gcc-profile",
-      "configurePreset": "gcc-profile",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "gcc-release",
-      "configurePreset": "gcc-release",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "gcc-asan",
-      "configurePreset": "gcc-asan",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "gcc-tsan",
-      "configurePreset": "gcc-tsan",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "gcc-ubsan",
-      "configurePreset": "gcc-ubsan",
-      "output": {
-        "verbosity": "extra",
-        "shortProgress": true,
-        "outputOnFailure": true
-      }
-    }
+    { "name": "gcc-debug", "configurePreset": "gcc-debug", "output": { "verbosity": "extra" } },
+    { "name": "gcc-profile", "configurePreset": "gcc-profile", "output": { "verbosity": "extra" } },
+    { "name": "gcc-release", "configurePreset": "gcc-release", "output": { "verbosity": "extra" } },
+    { "name": "gcc-asan", "configurePreset": "gcc-asan", "output": { "verbosity": "extra" } },
+    { "name": "gcc-tsan", "configurePreset": "gcc-tsan", "output": { "verbosity": "extra" } },
+    { "name": "gcc-ubsan", "configurePreset": "gcc-ubsan", "output": { "verbosity": "extra" } },
+
+    { "name": "clang-debug", "configurePreset": "clang-debug", "output": { "verbosity": "extra" } },
+    { "name": "clang-profile", "configurePreset": "clang-profile", "output": { "verbosity": "extra" } },
+    { "name": "clang-release", "configurePreset": "clang-release", "output": { "verbosity": "extra" } },
+    { "name": "clang-asan", "configurePreset": "clang-asan", "output": { "verbosity": "extra" } },
+    { "name": "clang-tsan", "configurePreset": "clang-tsan", "output": { "verbosity": "extra" } },
+    { "name": "clang-ubsan", "configurePreset": "clang-ubsan", "output": { "verbosity": "extra" } }
   ],
   "packagePresets": [
-    {
-      "name": "gcc-debug",
-      "configurePreset": "gcc-debug"
-    },
-    {
-      "name": "gcc-profile",
-      "configurePreset": "gcc-profile"
-    },
-    {
-      "name": "gcc-release",
-      "configurePreset": "gcc-release"
-    },
-    {
-      "name": "gcc-asan",
-      "configurePreset": "gcc-asan"
-    },
-    {
-      "name": "gcc-tsan",
-      "configurePreset": "gcc-tsan"
-    },
-    {
-      "name": "gcc-ubsan",
-      "configurePreset": "gcc-ubsan"
-    }
+    { "name": "gcc-debug", "configurePreset": "gcc-debug" },
+    { "name": "gcc-profile", "configurePreset": "gcc-profile" },
+    { "name": "gcc-release", "configurePreset": "gcc-release" },
+    { "name": "gcc-asan", "configurePreset": "gcc-asan" },
+    { "name": "gcc-tsan", "configurePreset": "gcc-tsan" },
+    { "name": "gcc-ubsan", "configurePreset": "gcc-ubsan" },
+
+    { "name": "clang-debug", "configurePreset": "clang-debug" },
+    { "name": "clang-profile", "configurePreset": "clang-profile" },
+    { "name": "clang-release", "configurePreset": "clang-release" },
+    { "name": "clang-asan", "configurePreset": "clang-asan" },
+    { "name": "clang-tsan", "configurePreset": "clang-tsan" },
+    { "name": "clang-ubsan", "configurePreset": "clang-ubsan" }
   ],
   "workflowPresets": [
     {
       "name": "gcc-debug",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-debug"
-        },
-        {
-          "type": "build",
-          "name": "gcc-debug"
-        },
-        {
-          "type": "test",
-          "name": "gcc-debug"
-        },
-        {
-          "type": "package",
-          "name": "gcc-debug"
-        }
+        { "type": "configure", "name": "gcc-debug" },
+        { "type": "build", "name": "gcc-debug" },
+        { "type": "test", "name": "gcc-debug" },
+        { "type": "package", "name": "gcc-debug" }
       ]
     },
     {
       "name": "gcc-profile",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-profile"
-        },
-        {
-          "type": "build",
-          "name": "gcc-profile"
-        },
-        {
-          "type": "test",
-          "name": "gcc-profile"
-        },
-        {
-          "type": "package",
-          "name": "gcc-profile"
-        }
+        { "type": "configure", "name": "gcc-profile" },
+        { "type": "build", "name": "gcc-profile" },
+        { "type": "test", "name": "gcc-profile" },
+        { "type": "package", "name": "gcc-profile" }
       ]
     },
     {
       "name": "gcc-release",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-release"
-        },
-        {
-          "type": "build",
-          "name": "gcc-release"
-        },
-        {
-          "type": "test",
-          "name": "gcc-release"
-        },
-        {
-          "type": "package",
-          "name": "gcc-release"
-        }
+        { "type": "configure", "name": "gcc-release" },
+        { "type": "build", "name": "gcc-release" },
+        { "type": "test", "name": "gcc-release" },
+        { "type": "package", "name": "gcc-release" }
       ]
     },
     {
       "name": "gcc-asan",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-asan"
-        },
-        {
-          "type": "build",
-          "name": "gcc-asan"
-        },
-        {
-          "type": "test",
-          "name": "gcc-asan"
-        },
-        {
-          "type": "package",
-          "name": "gcc-asan"
-        }
+        { "type": "configure", "name": "gcc-asan" },
+        { "type": "build", "name": "gcc-asan" },
+        { "type": "test", "name": "gcc-asan" },
+        { "type": "package", "name": "gcc-asan" }
       ]
     },
     {
       "name": "gcc-tsan",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-tsan"
-        },
-        {
-          "type": "build",
-          "name": "gcc-tsan"
-        },
-        {
-          "type": "test",
-          "name": "gcc-tsan"
-        },
-        {
-          "type": "package",
-          "name": "gcc-tsan"
-        }
+        { "type": "configure", "name": "gcc-tsan" },
+        { "type": "build", "name": "gcc-tsan" },
+        { "type": "test", "name": "gcc-tsan" },
+        { "type": "package", "name": "gcc-tsan" }
       ]
     },
     {
       "name": "gcc-ubsan",
       "steps": [
-        {
-          "type": "configure",
-          "name": "gcc-ubsan"
-        },
-        {
-          "type": "build",
-          "name": "gcc-ubsan"
-        },
-        {
-          "type": "test",
-          "name": "gcc-ubsan"
-        },
-        {
-          "type": "package",
-          "name": "gcc-ubsan"
-        }
+        { "type": "configure", "name": "gcc-ubsan" },
+        { "type": "build", "name": "gcc-ubsan" },
+        { "type": "test", "name": "gcc-ubsan" },
+        { "type": "package", "name": "gcc-ubsan" }
+      ]
+    },
+    {
+      "name": "clang-debug",
+      "steps": [
+        { "type": "configure", "name": "clang-debug" },
+        { "type": "build", "name": "clang-debug" },
+        { "type": "test", "name": "clang-debug" },
+        { "type": "package", "name": "clang-debug" }
+      ]
+    },
+    {
+      "name": "clang-profile",
+      "steps": [
+        { "type": "configure", "name": "clang-profile" },
+        { "type": "build", "name": "clang-profile" },
+        { "type": "test", "name": "clang-profile" },
+        { "type": "package", "name": "clang-profile" }
+      ]
+    },
+    {
+      "name": "clang-release",
+      "steps": [
+        { "type": "configure", "name": "clang-release" },
+        { "type": "build", "name": "clang-release" },
+        { "type": "test", "name": "clang-release" },
+        { "type": "package", "name": "clang-release" }
+      ]
+    },
+    {
+      "name": "clang-asan",
+      "steps": [
+        { "type": "configure", "name": "clang-asan" },
+        { "type": "build", "name": "clang-asan" },
+        { "type": "test", "name": "clang-asan" },
+        { "type": "package", "name": "clang-asan" }
+      ]
+    },
+    {
+      "name": "clang-tsan",
+      "steps": [
+        { "type": "configure", "name": "clang-tsan" },
+        { "type": "build", "name": "clang-tsan" },
+        { "type": "test", "name": "clang-tsan" },
+        { "type": "package", "name": "clang-tsan" }
+      ]
+    },
+    {
+      "name": "clang-ubsan",
+      "steps": [
+        { "type": "configure", "name": "clang-ubsan" },
+        { "type": "build", "name": "clang-ubsan" },
+        { "type": "test", "name": "clang-ubsan" },
+        { "type": "package", "name": "clang-ubsan" }
       ]
     }
   ]

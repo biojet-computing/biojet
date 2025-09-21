@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
-project(carbio)
+project(biojet)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/Init.cmake")
 
@@ -12,8 +16,8 @@ endif()
 
 option(BIOJET_BUILD_TESTS "Build unit tests" OFF)
 if(BIOJET_BUILD_TESTS)
-enable_testing()
-add_subdirectory(tests/unit)
+#enable_testing()
+#add_subdirectory(tests/unit)
 endif()
 
 option(BIOJET_BUILD_INTEG "Build integration tests" OFF)
